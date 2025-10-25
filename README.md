@@ -7,75 +7,68 @@
 ![TensorFlow](https://img.shields.io/badge/TensorFlow-FF6F00?logo=tensorflow&logoColor=white)
 ![GitHub](https://img.shields.io/badge/Repo-GitHub-lightgrey.svg)
 
-This repository contains the full workflow for an industrial Predictive Maintenance (PdM) solution. The primary objective is to leverage machine learning and deep learning to analyze complex sensor data, detect degradation patterns, and forecast potential equipment failures *before* they occur.
+This repository contains the full workflow for an industrial Predictive Maintenance (PdM) solution. The primary objective is to leverage machine learning and deep learning to analyze complex sensor data, detect degradation patterns, and forecast potential equipment failures before they occur.
 
-## 🧠 Project Title (Titre du Projet)
-**Développement d’un modèle de maintenance prédictive basé sur le Machine Learning**
+## 🧠 Project Title
+Development of a Predictive Maintenance Model Based on Machine Learning
 
-### Description du projet :
-Ce projet a pour objectif de développer un modèle de maintenance prédictive capable d’anticiper les défaillances des équipements industriels avant qu’elles ne se produisent. Il s’inscrit dans une démarche d’optimisation de la performance opérationnelle et de réduction des coûts de maintenance au sein d’un environnement industriel digitalisé.
+### Project Description
+The goal of this project is to develop a predictive maintenance model that can anticipate failures of industrial equipment before they occur. The work begins by building a representative dataset from scratch, either synthesized or collected, covering key operational parameters of machines (temperature, vibration, pressure, electric current, etc.), failure logs, and performance indicators.
 
-Le travail débute par **la constitution d’un dataset représentatif à partir de zéro**, construit à partir de données simulées ou collectées. Ce dataset comprend les paramètres essentiels du fonctionnement des machines (température, vibration, pression, courant électrique, etc.), les historiques de pannes et les indicateurs de performance.
+An exploratory data analysis (EDA) phase is then conducted to discover trends, correlations, and anomalies. Based on this analysis, various machine learning models (Random Forest, XGBoost, LightGBM, SVM, etc.) are tested to predict:
+- The most probable type of fault (classification)
+- And/or the time of failure occurrence (time series regression)
 
-Une phase d’analyse exploratoire des données (EDA) est ensuite menée afin d’identifier les tendances, corrélations et anomalies. Sur cette base, différents modèles d’apprentissage automatique (Random Forest, XGBoost, LightGBM, SVM…) seront testés pour prédire :
-- Le type de panne probable (classification)
-- Et/ou le moment de survenue d’une défaillance (régression temporelle)
+The model performances are evaluated using appropriate metrics (accuracy, F1-score, RMSE, etc.), allowing the selection of the most reliable solution for potential integration into an intelligent monitoring system.
 
-Enfin, les performances des modèles seront évaluées à l’aide de métriques adaptées (précision, F1-score, RMSE…), afin de sélectionner la solution la plus fiable pour une intégration potentielle dans un système de supervision intelligent.
-
-**Technologies et outils :**
-- Langage : Python
-- Bibliothèques : Pandas, NumPy, Scikit-learn, XGBoost, LightGBM, Matplotlib, Seaborn
-- Environnement : Jupyter Notebook / Visual Studio Code
-- Domaine d’application : Industrie 4.0 – Maintenance prédictive
+**Technologies and Tools:**
+- Language: Python 3.x
+- Libraries: pandas, NumPy, Scikit-learn, XGBoost, LightGBM, Matplotlib, Seaborn
+- Environment: Jupyter Notebook, VS Code
+- Application Domain: Industry 4.0 – Predictive Maintenance
 
 ## 🎯 Main Objectives
 
-This project is designed to optimize industrial operations by moving from reactive/preventive maintenance to a proactive, *predictive* strategy.
+This project is designed to optimize industrial operations by moving from reactive or preventive maintenance to a proactive, predictive strategy.
 
-* **Optimize Maintenance:** Anticipate failures to enable proactive interventions and scheduled repairs.
-* **Reduce Downtime:** Minimize costly operational stoppages by forecasting faults early.
-* **Understand Sensor Behavior:** Link variations in sensor readings (temperature, vibration, etc.) to specific equipment degradation patterns.
-* **Develop Scalable Models:** Build and validate robust ML/DL models that can be deployed in real industrial environments (Edge/Cloud).
-* **Ensure Reproducibility:** Maintain a clear, version-controlled environment (Jupyter + GitHub) for experimentation and collaboration.
+* Optimize Maintenance: Anticipate failures to enable proactive interventions and scheduled repairs.
+* Reduce Downtime: Minimize costly operational stoppages by forecasting faults early.
+* Understand Sensor Behavior: Link variations in sensor readings (temperature, vibration, etc.) to specific equipment degradation patterns.
+* Develop Scalable Models: Build and validate robust ML/DL models deployable in industrial settings (Edge/Cloud).
+* Ensure Reproducibility: Maintain a clear, version-controlled environment (Jupyter + GitHub) for experimentation and collaboration.
 
 ## 🛠️ Core Capabilities
 
 This project framework covers the complete end-to-end ML pipeline:
 
-1.  **Dataset Creation from Scratch:**
-    * Builds a realistic synthetic or collected dataset representing industrial behavior and sensor readings.
-    * Establishes data collection integrity with machine parameters, failure history, and key KPIs.
-
-2.  **Industrial Data Analysis & Processing:**
-    * Handles complex, multi-variate time-series sensor datasets (e.g., temperature, vibration, current, torque).
-    * Detects patterns, correlations, and anomalies in machine behavior.
-
-3.  **Advanced Data Exploration & Visualization:**
-    * Generates clear analytical visuals (heatmaps, trend lines, anomaly plots) using Matplotlib and Seaborn to build domain understanding.
-
-4.  **Machine Failure Forecasting (ML/DL):**
-    * Builds and trains models for both:
-        * **Classification:** "Will this machine fail in the next N hours?"
-        * **Regression:** "What is the Remaining Useful Life (RUL) of this component?"
-
-5.  **AI Model Development & Optimization:**
-    * Implements flexible models ranging from classical ML (Random Forest, XGBoost) to Neural Networks (LSTM, CNNs) using Scikit-learn, TensorFlow, and PyTorch.
-
-6.  **Full ML Pipeline Integration:**
-    * Covers preprocessing, normalization, advanced feature engineering (e.g., rolling averages, frequency analysis), model training, cross-validation, and performance evaluation.
+1. Dataset Creation from Scratch:
+   * Build a comprehensive dataset reflecting industrial scenarios and sensor readings.
+   * Ensure coverage of machine parameters, failure history, and KPIs.
+2. Industrial Data Analysis & Processing:
+   * Handle multivariate time-series sensor datasets (temperature, vibration, current, torque, etc.).
+   * Detect patterns, correlations, and anomalies in machine behavior.
+3. Advanced Data Exploration & Visualization:
+   * Generate clear analytical visuals (heatmaps, trend lines, anomaly plots) using Matplotlib and Seaborn.
+4. Machine Failure Forecasting (ML/DL):
+   * Develop and train models for:
+      * Classification: "Will this machine fail in the next N hours?"
+      * Regression: "What is the Remaining Useful Life (RUL) of this component?"
+5. AI Model Development & Optimization:
+   * Implement flexible models ranging from classical ML (Random Forest, XGBoost, LightGBM, SVM) to neural networks (LSTM, CNNs) using Scikit-learn, TensorFlow, and PyTorch.
+6. Full ML Pipeline Integration:
+   * Perform preprocessing, normalization, feature engineering (e.g., rolling averages, frequency analysis), model training, cross-validation, and performance evaluation.
 
 ## 💻 Technology Stack
 
-| Domain | Tools & Frameworks | Description |
-| :--- | :--- | :--- |
-| **Language** | `Python 3.x` | Core language for data science and ML. |
-| **Data Handling** | `pandas`, `NumPy` | Data cleaning, transformation, and feature engineering. |
-| **Visualization** | `Matplotlib`, `Seaborn` | Visual exploration, trend analysis, and results plotting. |
-| **Machine Learning**| `Scikit-learn`, `XGBoost`, `LightGBM` | Classification, regression, and performance evaluation. |
-| **Deep Learning** | `TensorFlow`, `Keras`, `PyTorch` | Neural network modeling for advanced time-series prediction. |
-| **Environment** | `Jupyter Notebook`, `Kaggle`, `VS Code` | Experimentation, prototyping, and dataset integration. |
-| **Version Control**| `Git`, `GitHub` | Workflow management, tracking, and collaboration. |
+| Domain              | Tools & Frameworks                          | Description                                           |
+| :------------------| :-------------------------------------------| :---------------------------------------------------- |
+| Language           | Python 3.x                                  | Core language for data science and ML.                |
+| Data Handling      | pandas, NumPy                               | Data cleaning, transformation, and feature engineering |
+| Visualization      | Matplotlib, Seaborn                         | Visual exploration, trend analysis, results plotting   |
+| Machine Learning   | Scikit-learn, XGBoost, LightGBM, SVM        | Classification, regression, and performance evaluation |
+| Deep Learning      | TensorFlow, Keras, PyTorch                  | Neural network modeling for advanced time-series       |
+| Environment        | Jupyter Notebook, VS Code                   | Experimentation, prototyping, dataset integration      |
+| Version Control    | Git, GitHub                                 | Workflow management, tracking, collaboration           |
 
 ## 🚀 Getting Started
 
@@ -104,7 +97,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-*(Note: You will need to create a requirements.txt file. You can generate one from your environment using `pip freeze > requirements.txt`)*
+*(Note: You need to create a requirements.txt using `pip freeze > requirements.txt` after installing dependencies)*
 
 ### 4. Run the Project
 
@@ -112,7 +105,7 @@ pip install -r requirements.txt
 jupyter notebook
 ```
 
-Follow the Notebooks: Open the notebooks/ directory and run the notebooks in sequential order (e.g., `01_Data_Generation.ipynb`, `02_Data_Exploration.ipynb`, etc.)
+Open the notebooks/ directory and run the notebooks in order (e.g., 01_Data_Generation.ipynb, 02_Data_Exploration.ipynb, etc.)
 
 ## 📂 Project Structure (Example)
 
