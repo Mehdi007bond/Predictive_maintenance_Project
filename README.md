@@ -9,6 +9,26 @@
 
 This repository contains the full workflow for an industrial Predictive Maintenance (PdM) solution. The primary objective is to leverage machine learning and deep learning to analyze complex sensor data, detect degradation patterns, and forecast potential equipment failures *before* they occur.
 
+## 🧠 Project Title (Titre du Projet)
+**Développement d’un modèle de maintenance prédictive basé sur le Machine Learning**
+
+### Description du projet :
+Ce projet a pour objectif de développer un modèle de maintenance prédictive capable d’anticiper les défaillances des équipements industriels avant qu’elles ne se produisent. Il s’inscrit dans une démarche d’optimisation de la performance opérationnelle et de réduction des coûts de maintenance au sein d’un environnement industriel digitalisé.
+
+Le travail débute par **la constitution d’un dataset représentatif à partir de zéro**, construit à partir de données simulées ou collectées. Ce dataset comprend les paramètres essentiels du fonctionnement des machines (température, vibration, pression, courant électrique, etc.), les historiques de pannes et les indicateurs de performance.
+
+Une phase d’analyse exploratoire des données (EDA) est ensuite menée afin d’identifier les tendances, corrélations et anomalies. Sur cette base, différents modèles d’apprentissage automatique (Random Forest, XGBoost, LightGBM, SVM…) seront testés pour prédire :
+- Le type de panne probable (classification)
+- Et/ou le moment de survenue d’une défaillance (régression temporelle)
+
+Enfin, les performances des modèles seront évaluées à l’aide de métriques adaptées (précision, F1-score, RMSE…), afin de sélectionner la solution la plus fiable pour une intégration potentielle dans un système de supervision intelligent.
+
+**Technologies et outils :**
+- Langage : Python
+- Bibliothèques : Pandas, NumPy, Scikit-learn, XGBoost, LightGBM, Matplotlib, Seaborn
+- Environnement : Jupyter Notebook / Visual Studio Code
+- Domaine d’application : Industrie 4.0 – Maintenance prédictive
+
 ## 🎯 Main Objectives
 
 This project is designed to optimize industrial operations by moving from reactive/preventive maintenance to a proactive, *predictive* strategy.
@@ -23,22 +43,26 @@ This project is designed to optimize industrial operations by moving from reacti
 
 This project framework covers the complete end-to-end ML pipeline:
 
-1.  **Industrial Data Analysis & Processing:**
+1.  **Dataset Creation from Scratch:**
+    * Builds a realistic synthetic or collected dataset representing industrial behavior and sensor readings.
+    * Establishes data collection integrity with machine parameters, failure history, and key KPIs.
+
+2.  **Industrial Data Analysis & Processing:**
     * Handles complex, multi-variate time-series sensor datasets (e.g., temperature, vibration, current, torque).
     * Detects patterns, correlations, and anomalies in machine behavior.
 
-2.  **Advanced Data Exploration & Visualization:**
+3.  **Advanced Data Exploration & Visualization:**
     * Generates clear analytical visuals (heatmaps, trend lines, anomaly plots) using Matplotlib and Seaborn to build domain understanding.
 
-3.  **Machine Failure Forecasting (ML/DL):**
+4.  **Machine Failure Forecasting (ML/DL):**
     * Builds and trains models for both:
         * **Classification:** "Will this machine fail in the next N hours?"
         * **Regression:** "What is the Remaining Useful Life (RUL) of this component?"
 
-4.  **AI Model Development & Optimization:**
+5.  **AI Model Development & Optimization:**
     * Implements flexible models ranging from classical ML (Random Forest, XGBoost) to Neural Networks (LSTM, CNNs) using Scikit-learn, TensorFlow, and PyTorch.
 
-5.  **Full ML Pipeline Integration:**
+6.  **Full ML Pipeline Integration:**
     * Covers preprocessing, normalization, advanced feature engineering (e.g., rolling averages, frequency analysis), model training, cross-validation, and performance evaluation.
 
 ## 💻 Technology Stack
@@ -48,9 +72,9 @@ This project framework covers the complete end-to-end ML pipeline:
 | **Language** | `Python 3.x` | Core language for data science and ML. |
 | **Data Handling** | `pandas`, `NumPy` | Data cleaning, transformation, and feature engineering. |
 | **Visualization** | `Matplotlib`, `Seaborn` | Visual exploration, trend analysis, and results plotting. |
-| **Machine Learning**| `Scikit-learn`, `XGBoost` | Classification, regression, and performance evaluation. |
+| **Machine Learning**| `Scikit-learn`, `XGBoost`, `LightGBM` | Classification, regression, and performance evaluation. |
 | **Deep Learning** | `TensorFlow`, `Keras`, `PyTorch` | Neural network modeling for advanced time-series prediction. |
-| **Environment** | `Jupyter Notebook`, `Kaggle` | Experimentation, prototyping, and dataset integration. |
+| **Environment** | `Jupyter Notebook`, `Kaggle`, `VS Code` | Experimentation, prototyping, and dataset integration. |
 | **Version Control**| `Git`, `GitHub` | Workflow management, tracking, and collaboration. |
 
 ## 🚀 Getting Started
@@ -64,8 +88,6 @@ cd Predictive_maintenance_Project
 
 ### 2. Set Up a Virtual Environment
 
-It is highly recommended to use a virtual environment to manage dependencies.
-
 ```bash
 # Windows
 python -m venv venv
@@ -78,8 +100,6 @@ source venv/bin/activate
 
 ### 3. Install Dependencies
 
-Install all the required packages listed in the requirements.txt file.
-
 ```bash
 pip install -r requirements.txt
 ```
@@ -88,18 +108,13 @@ pip install -r requirements.txt
 
 ### 4. Run the Project
 
-The core analysis and model development are structured within Jupyter Notebooks.
-Start Jupyter:
-
 ```bash
 jupyter notebook
 ```
 
-Follow the Notebooks: Open the notebooks/ directory and run the notebooks in sequential order (e.g., `01_Data_Exploration.ipynb`, `02_Feature_Engineering.ipynb`, etc.)
+Follow the Notebooks: Open the notebooks/ directory and run the notebooks in sequential order (e.g., `01_Data_Generation.ipynb`, `02_Data_Exploration.ipynb`, etc.)
 
 ## 📂 Project Structure (Example)
-
-A recommended structure for this project:
 
 ```
 .
