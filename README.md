@@ -1,259 +1,159 @@
-# 🔧 ML Predictive Maintenance Project
+# 🔧 Predictive Maintenance Project
 
 ![Python](https://img.shields.io/badge/Python-3.x-blue.svg)
 ![Pandas](https://img.shields.io/badge/Pandas-blueviolet.svg)
-![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-FF6F00?logo=tensorflow&logoColor=white)
-![Keras](https://img.shields.io/badge/Keras-2.x-D00000?logo=keras&logoColor=white)
 ![Dataset](https://img.shields.io/badge/Dataset-69%2C120%20samples-success.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Mehdi007bond/Predictive_maintenance_Project/blob/main/Predictive_maintenance_Project_.ipynb)
 
-## 📋 Overview
+## Overview
+This project simulates industrial sensor data across multiple production lines and machine types to study failure patterns and support predictive maintenance. It programmatically generates a balanced time-series dataset with a realistic 4% failing-state prevalence, then performs exploratory analysis and visualization to understand sensor behavior during degradation.
 
-This repository implements a comprehensive **Predictive Maintenance (PdM)** solution using machine learning and deep learning techniques. The project covers the complete pipeline from synthetic data generation to LSTM-based failure prediction for industrial equipment monitoring.
+## 🎯 Purpose
+- Anticipate failures with sufficient lead time (~58 hours) to plan maintenance
+- Reduce unplanned downtime and optimize maintenance schedules
+- Provide a reproducible baseline (data generation + future LSTM modeling) ready for industrial adaptation
+- Study degradation patterns across different machine types and production lines
 
-### 🎯 Key Features
-- **Synthetic Dataset Generation**: 69,120 time-series samples across 4 production lines and 12 machines
-- **Multi-Machine Types**: Fraiseuse, Convoyeur, Machine_de_finition with distinct degradation patterns
-- **LSTM Neural Networks**: Deep learning approach for sequence-based failure prediction
-- **Comprehensive EDA**: Statistical analysis and visualization of sensor patterns
-- **Real-time Prediction**: State-based classification (failure=1 within prediction horizon)
+## 🛠 Technologies Used
+- **Python 3.x** - Core programming language
+- **pandas** - Data manipulation and analysis
+- **numpy** - Numerical computing
+- **matplotlib** - Basic plotting and visualization
+- **seaborn** - Statistical data visualization
+- **datetime** - Time series handling (built-in)
+- **Jupyter/Colab** - Interactive development environment
+- **TensorFlow/Keras** - (Planned for LSTM implementation)
 
-## 🏭 Problem Statement
+## 📊 What This Project Does
+- **Synthetic data generation** for 4 production lines and 12 machines over 60 days at 4 samples/hour
+- **Failure-state simulation** with realistic, progressive sensor degradation beginning 58 hours before failure
+- **Dataset export** to CSV format (`production_line_STATE_BASED_4_PERCENT_data.csv`)
+- **Exploratory data analysis (EDA)** with histograms, distributions, and statistical analysis
+- **Per-line and per-machine-type** slicing and visualization
+- **Future: LSTM-based sequence modeling** for failure prediction with temporal windows
 
-Industrial equipment failures lead to costly downtime and safety hazards. This project develops a predictive maintenance system that:
+## 📋 Dataset Design
 
-1. **Monitors** multi-sensor data (temperature, vibration, current, torque)
-2. **Detects** degradation patterns using LSTM neural networks
-3. **Predicts** failure states 58 hours in advance (4% positive rate)
-4. **Prevents** unplanned downtime through early intervention
+### Entities
+- **4 production lines**: Line_1, Line_2, Line_3, Line_4
+- **3 machine types per line**: Fraiseuse, Convoyeur, Machine_de_finition
+- **12 total machines** (4×3)
+- **Total records**: 60 days × 24 hours × 4 samples/hour × 12 machines = **69,120 rows**
 
-## 🧠 Deep Learning Architecture (LSTM)
+### Columns
+| Column | Type | Description |
+|--------|------|-------------|
+| `timestamp` | datetime | Sample timestamp |
+| `production_line` | string | Line_1..Line_4 |
+| `machine_id` | int | 1..12 |
+| `machine_type` | string | Fraiseuse \| Convoyeur \| Machine_de_finition |
+| `temperature` | float | Temperature (°C) |
+| `vibration` | float | Vibration measurement |
+| `current` | float | Current (A) |
+| `torque` | float | Torque (Nm) |
+| `total_working_hours` | float | Cumulative operating hours |
+| `failure` | int | 0 (healthy), 1 (failing-state window) |
 
-### Problem Framing
-- **Classification Task**: Detect failing-state windows (failure=1) within prediction horizon
-- **Sequence Modeling**: Use rolling windows of sensor readings to capture temporal dependencies
-- **Multi-sensor Input**: [temperature, vibration, current, torque, total_working_hours]
+### Failure Modeling
+- **Target prevalence**: ~4% failing-state (2,784 samples out of 69,120)
+- **Failing state window**: Starts 58 hours before randomly selected failure point
+- **Progressive degradation** during failing window:
+  - **Fraiseuse**: temperature ↑, vibration ↑, current ↑, torque ↑
+  - **Convoyeur**: temperature ↑, vibration ↑, current ↑, torque ↑
+  - **Machine_de_finition**: temperature ↑, vibration ↑, current ↓, torque ↓
 
-### Model Architecture
+## 📁 Notebook Structure (Key Steps)
+
+### 1. Configuration and Parameters
 ```python
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense, Dropout
-
-model = Sequential([
-    LSTM(64, return_sequences=True, input_shape=(window_size, n_features)),
-    LSTM(32),
-    Dense(32, activation='relu'),
-    Dropout(0.3),
-    Dense(1, activation='sigmoid')
-])
-
-model.compile(
-    optimizer='adam',
-    loss='binary_crossentropy',
-    metrics=['accuracy', 'precision', 'recall']
-)
+N_LINES = 4
+DAYS_PER_MACHINE = 60
+SAMPLES_PER_HOUR = 4
+FAILURE_STATE_HOURS = 58
 ```
 
-### Training Configuration
-- **Window Size**: 64 timesteps (16 hours at 4 samples/hour)
-- **Features**: 5 standardized sensor readings
-- **Class Weighting**: Address 4% positive class imbalance
-- **Optimization**: Adam optimizer with ReduceLROnPlateau
-- **Early Stopping**: Patience=5, restore best weights
-- **Validation**: Time-based split to prevent data leakage
+### 2. Machine Profiles
+- Base values and noise parameters per machine type
+- Type-specific degradation rates applied during failing-state interval
+- Temperature, vibration, current, torque parameter ranges
 
-## 📊 Dataset Specifications
+### 3. Data Generation Loop
+- Builds per-machine time series with slight timestamp offset (seconds)
+- Assigns failure window and applies progressive degradation
+- Concatenates all machine DataFrames and sorts globally by timestamp
+- Exports to `production_line_STATE_BASED_4_PERCENT_data.csv`
 
-| Parameter | Value |
-|-----------|-------|
-| **Total Samples** | 69,120 |
-| **Production Lines** | 4 (Line_1 to Line_4) |
-| **Machines per Line** | 3 (Fraiseuse, Convoyeur, Machine_de_finition) |
-| **Sampling Rate** | 4 samples/hour |
-| **Duration** | 60 days per machine |
-| **Failure Rate** | ~4% (2,784 positive samples) |
-| **Features** | timestamp, production_line, machine_id, machine_type, temperature, vibration, current, torque, total_working_hours, failure |
+### 4. Exploratory Data Analysis (EDA)
+- `df.info()`, `df.describe()`, `df.shape` - Basic dataset overview
+- Histograms for all numeric columns (`df.hist()`)
+- Simple per-line and per-type data slicing
+- Distribution analysis and failure state visualization
 
-### Machine Profiles
-Each machine type has distinct operational characteristics:
+## 📈 Quick Results
+- **Total rows**: 69,120
+- **Failure distribution**: 66,336 healthy (96%), 2,784 failing-state (4%)
+- **Columns**: 10 core features
+- **Time span**: 60 days per machine
+- **Sampling rate**: 4 samples/hour
+- **CSV file size**: ~2MB generated dataset
 
-- **Fraiseuse**: High temperature/vibration, intensive operations
-- **Convoyeur**: Moderate temperature, current-sensitive
-- **Machine_de_finition**: Low vibration, precision operations
+## 🚀 How to Run
 
-## 🔄 Reproduce LSTM Training
-
-### 1. Environment Setup
-```bash
-pip install tensorflow keras scikit-learn pandas numpy matplotlib seaborn
-```
-
-### 2. Data Preparation
-```python
-# Load and prepare data
-df = pd.read_csv('production_line_STATE_BASED_4_PERCENT_data.csv')
-features = ['temperature', 'vibration', 'current', 'torque', 'total_working_hours']
-
-# Sort by machine_id and timestamp
-df_sorted = df.sort_values(['machine_id', 'timestamp'])
-```
-
-### 3. Sequence Windowing
-```python
-def create_sequences(data, window_size=64, stride=1):
-    X, y = [], []
-    for i in range(0, len(data) - window_size + 1, stride):
-        X.append(data[i:(i + window_size), :])
-        # Label by max failure in window or failure at window end
-        y.append(max(labels[i:(i + window_size)]))
-    return np.array(X), np.array(y)
-```
-
-### 4. Train/Validation Split
-```python
-# Time-based split to prevent leakage
-split_date = '2024-02-15'
-train_data = df[df['timestamp'] < split_date]
-val_data = df[df['timestamp'] >= split_date]
-```
-
-### 5. Model Training
-```python
-from sklearn.utils.class_weight import compute_class_weight
-
-# Calculate class weights for imbalanced data
-class_weights = compute_class_weight('balanced', 
-                                   classes=np.unique(y_train), 
-                                   y=y_train)
-
-# Train with early stopping
-history = model.fit(X_train, y_train,
-                   validation_data=(X_val, y_val),
-                   epochs=50,
-                   batch_size=256,
-                   class_weight=dict(enumerate(class_weights)),
-                   callbacks=[early_stopping, lr_reduction])
-```
-
-### 6. Evaluation Metrics
-- **AUROC**: Area under ROC curve for binary classification
-- **AUPRC**: Area under Precision-Recall curve (important for imbalanced data)
-- **F1-Score**: Harmonic mean of precision and recall
-- **Precision@K**: Precision at top K predictions (alert budget)
-- **Per-segment Analysis**: Performance breakdown by production line and machine type
-
-## 💻 Technology Stack
-
-| Component | Technology | Purpose |
-|-----------|------------|---------|
-| **Language** | Python 3.x | Core development |
-| **Data Processing** | pandas, NumPy | Data manipulation and analysis |
-| **Deep Learning** | TensorFlow, Keras | LSTM neural networks |
-| **ML Algorithms** | Scikit-learn, XGBoost | Traditional ML models |
-| **Visualization** | Matplotlib, Seaborn | Data exploration and results |
-| **Environment** | Jupyter Notebook, Google Colab | Interactive development |
-| **Version Control** | Git, GitHub | Code management |
-
-## 📈 Getting Started
-
-### Clone Repository
+### 1. Clone Repository
 ```bash
 git clone https://github.com/Mehdi007bond/Predictive_maintenance_Project.git
 cd Predictive_maintenance_Project
 ```
 
-### Install Dependencies
+### 2. Install Dependencies
 ```bash
-pip install -r requirements.txt
+pip install pandas numpy matplotlib seaborn jupyter
 ```
 
-### Run Notebooks
-1. **Data Generation**: Execute `Predictive_maintenance_Project_.ipynb` to generate synthetic dataset
-2. **Exploratory Analysis**: Analyze sensor patterns and failure distributions
-3. **LSTM Training**: Implement sequence modeling for failure prediction
-4. **Model Evaluation**: Assess performance and generate insights
+### 3. Launch Notebook
+```bash
+jupyter notebook Predictive_maintenance_Project_.ipynb
+```
+*Or open directly in Google Colab using the badge at the top of the notebook*
 
-## 📂 Project Structure
+## 🧠 Method Overview (Current + Planned)
+1. **Data Generation**: Realistic sensor signals with machine-specific degradation profiles
+2. **EDA**: Understanding distributions, correlations, and failure patterns  
+3. **Sequence Modeling (Planned)**: LSTM with temporal windows to classify failing states
+4. **Evaluation (Planned)**: AUROC/AUPRC/F1 metrics and per-segment analysis (line/type)
 
+## ⚠️ Notes, Caveats, and Tips
+- **Failure label** represents a state window before failure (classification framing), not point failure or RUL; models should be designed accordingly
+- **Degradation patterns** are deliberately simple and type-dependent to make patterns detectable and explainable
+- **Dataset balance** (4% failing-state) is optimized for study rather than real-world skew; adjust `FAILURE_STATE_HOURS` or failure sampling logic for different targets
+- **Timestamp alignment**: Slight random offsets prevent perfect synchronization between machines
+- **CSV output**: Generated dataset is automatically saved and can be reused without re-running generation
+
+## 🛠 Future Work (Roadmap)
+- [ ] **Feature Engineering**: Add train/validation splits and rolling window features
+- [ ] **LSTM Implementation**: Build sequence models with temporal windows for failure classification
+- [ ] **Baseline Models**: Implement logistic regression and random forest for comparison
+- [ ] **Time-series Features**: Sliding windows, statistical aggregations, trend analysis
+- [ ] **Model Evaluation**: AUROC, AUPRC, F1-score with calibration analysis
+- [ ] **RUL Extension**: Extend to Remaining Useful Life regression framing
+- [ ] **Real-time Monitoring**: Add dashboards and streaming prediction capabilities
+- [ ] **Industrial Deployment**: Edge computing and IoT integration considerations
+
+## 📁 Repository Layout (Current)
 ```
 Predictive_maintenance_Project/
-├── 📄 Predictive_maintenance_Project_.ipynb  # Main notebook
-├── 📊 production_line_STATE_BASED_4_PERCENT_data.csv  # Generated dataset
-├── 🔧 src/
-│   ├── data_generation.py      # Synthetic data creation
-│   ├── sequence_modeling.py    # LSTM windowing and training
-│   └── evaluation.py           # Model assessment utilities
-├── 📈 models/
-│   ├── lstm_failure_predictor.h5    # Trained LSTM model
-│   └── feature_scaler.pkl           # StandardScaler for preprocessing
-├── 📋 requirements.txt         # Project dependencies
-└── 📖 README.md               # This file
+├── Predictive_maintenance_Project_.ipynb    # Main notebook with data generation and EDA
+├── production_line_STATE_BASED_4_PERCENT_data.csv    # Generated dataset (output)
+├── README.md                                # This documentation
+└── requirements.txt                         # Python dependencies (planned)
 ```
 
-## 🔬 Methodology
+## 👨‍💻 Author
+**Mehdi Boumazzourh** ([@Mehdi007bond](https://github.com/Mehdi007bond))
 
-### 1. Data Generation
-- **Synthetic Dataset**: Realistic sensor data with controllable failure patterns
-- **Machine Profiles**: Distinct parameter ranges for different equipment types
-- **Temporal Degradation**: Progressive sensor deterioration before failures
-- **Balanced Scenarios**: 4% failure rate matching real-world distributions
-
-### 2. Exploratory Data Analysis (EDA)
-- **Sensor Correlation**: Identify relationships between parameters
-- **Failure Patterns**: Analyze degradation signatures per machine type
-- **Temporal Trends**: Visualize sensor evolution over operational hours
-- **Statistical Distribution**: Characterize normal vs. failure states
-
-### 3. LSTM Implementation
-- **Sequence Windows**: 64-timestep windows for temporal pattern recognition
-- **Feature Scaling**: StandardScaler normalization for stable training
-- **Architecture**: Bidirectional LSTM layers with dropout regularization
-- **Class Balancing**: Weighted loss function for imbalanced data
-- **Validation**: Time-based splits to prevent data leakage
-
-### 4. Model Evaluation
-- **Performance Metrics**: AUROC, AUPRC, F1-score, Precision@K
-- **Segment Analysis**: Per production line and machine type breakdown
-- **Calibration**: Reliability of predicted probabilities
-- **Alert Optimization**: Threshold selection for operational deployment
-
-## 📊 Expected Results
-
-- **High Recall**: Minimize missed failures (false negatives)
-- **Controlled Precision**: Balance alert fatigue with safety requirements
-- **Early Detection**: 58-hour prediction horizon for maintenance planning
-- **Interpretability**: Understanding of sensor-failure relationships
-- **Scalability**: Framework applicable to different industrial contexts
-
-## 🔮 Future Enhancements
-
-- **Anomaly Detection**: Unsupervised learning for unknown failure modes
-- **Multi-task Learning**: Joint prediction of failure type and RUL
-- **Federated Learning**: Privacy-preserving training across multiple sites
-- **Real-time Deployment**: Edge computing integration with IoT sensors
-- **Explanation AI**: SHAP/LIME analysis for model interpretability
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/improvement`)
-3. Commit changes (`git commit -am 'Add improvement'`)
-4. Push to branch (`git push origin feature/improvement`)
-5. Create Pull Request
-
-## 📧 Contact
-
-For questions, suggestions, or collaboration opportunities, please reach out through:
-- GitHub Issues: [Project Issues](https://github.com/Mehdi007bond/Predictive_maintenance_Project/issues)
-- LinkedIn: [Your LinkedIn Profile]
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## 📜 License
+MIT License - see LICENSE file for details
 
 ---
-
-⚙️ **Built with passion for Industrial AI and Predictive Analytics** ⚙️
-
-*Transforming reactive maintenance into intelligent, proactive solutions through machine learning and deep learning innovations.*
+*This project provides a foundation for predictive maintenance research and can be adapted for real industrial applications. The current implementation focuses on data generation and EDA, with LSTM modeling planned as the next major milestone.*
